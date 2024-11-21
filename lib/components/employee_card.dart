@@ -4,11 +4,17 @@ import 'package:be_talent/theme/app_colors.dart';
 import 'package:be_talent/theme/app_font.dart';
 import '../model/employee.dart';
 
-class EmployeeCard extends StatelessWidget {
+class EmployeeCard extends StatefulWidget {
   final Employee employee;
 
   const EmployeeCard({super.key, required this.employee});
 
+  @override
+  State<EmployeeCard> createState() => _EmployeeCardState();
+}
+
+class _EmployeeCardState extends State<EmployeeCard> {
+  bool isExpanded = false;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -18,22 +24,29 @@ class EmployeeCard extends StatelessWidget {
       child: ExpansionTile(
         leading: ClipOval(
           child: CachedNetworkImage(
-            imageUrl: employee.image,
+            imageUrl: widget.employee.image,
             placeholder: (context, url) => CircularProgressIndicator(),
             errorWidget: (context, url, error) {
               print('Erro ao carregar imagem: $error');
               return const Icon(Icons.error);
             },
             fit: BoxFit.cover,
-            width: 50,
-            height: 50,
+            width: 40,
+            height: 40,
           ),
         ),
-        title: Text(
-          employee.name,
-          style: AppFont.h3(color: AppColors.black),
+        title: Padding(
+          padding: const EdgeInsets.only(left: 16.0),
+          child: Text(
+            widget.employee.name,
+            style: AppFont.h3(color: AppColors.black),
+          ),
         ),
-        trailing: const Icon(Icons.arrow_drop_down),
+        trailing: Icon(
+          isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+          color: AppColors.blue_primary,
+          size: 30,
+        ),
         children: [
           Padding(
             padding:
@@ -41,24 +54,56 @@ class EmployeeCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Cargo: ${employee.job}',
-                  // style: AppFont.body(color: AppColors.gray80),
+                Row(
+                  children: [
+                    Text(
+                      'Cargo',
+                      style: AppFont.h2(color: AppColors.black),
+                    ),
+                    Spacer(),
+                    Text(
+                      widget.employee.job,
+                      style: AppFont.h3(color: AppColors.black),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 8),
-                Text(
-                  'Data de Admissão: ${employee.admissionDate}',
-                  // style: AppFont.body(color: AppColors.gray80),
+                Row(
+                  children: [
+                    Text(
+                      'Data de admissão',
+                      style: AppFont.h2(color: AppColors.black),
+                    ),
+                    Spacer(),
+                    Text(
+                      widget.employee.formattedAdmissionDate,
+                      style: AppFont.h3(color: AppColors.black),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 8),
-                Text(
-                  'Telefone: ${employee.phone}',
-                  // style: AppFont.body(color: AppColors.gray80),
+                Row(
+                  children: [
+                    Text(
+                      'Telefone',
+                      style: AppFont.h2(color: AppColors.black),
+                    ),
+                    Spacer(),
+                    Text(
+                      widget.employee.formattedPhone,
+                      style: AppFont.h3(color: AppColors.black),
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
         ],
+        onExpansionChanged: (value) {
+          setState(() {
+            isExpanded = value;
+          });
+        },
       ),
     );
   }
