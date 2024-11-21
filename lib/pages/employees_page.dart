@@ -94,10 +94,10 @@ class _EmployeesPageState extends State<EmployeesPage> {
                       ),
                       child: Row(
                         children: [
-                          const SizedBox(width: 16),
+                          const SizedBox(width: 24),
                           Text("Foto",
                               style: AppFont.h2(color: AppColors.black)),
-                          const SizedBox(width: 16),
+                          const SizedBox(width: 34),
                           Text("Nome",
                               style: AppFont.h2(color: AppColors.black)),
                           const Spacer(),
@@ -109,7 +109,7 @@ class _EmployeesPageState extends State<EmployeesPage> {
                               color: AppColors.black,
                             ),
                           ),
-                          const SizedBox(width: 16),
+                          const SizedBox(width: 36),
                         ],
                       ),
                     ),
