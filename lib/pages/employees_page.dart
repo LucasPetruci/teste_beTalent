@@ -71,7 +71,7 @@ class _EmployeesPageState extends State<EmployeesPage> {
         titleSpacing: 0,
         title: Padding(
           padding: const EdgeInsets.all(16),
-          child: BaseMenu(notificationCount: 3),
+          child: BaseMenu(notificationCount: 2),
         ),
       ),
       body: Padding(
