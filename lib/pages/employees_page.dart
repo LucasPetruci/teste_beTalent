@@ -1,3 +1,4 @@
+import 'package:be_talent/controller/employee_controller.dart';
 import 'package:be_talent/model/employee.dart';
 import 'package:be_talent/service/employee_service.dart';
 import 'package:be_talent/theme/app_font.dart';
@@ -15,7 +16,8 @@ class EmployeesPage extends StatefulWidget {
 }
 
 class _EmployeesPageState extends State<EmployeesPage> {
-  final EmployeeService _employeeService = EmployeeService();
+  final EmployeeController _employeeController =
+      EmployeeController(EmployeeService());
   List<Employee> employees = [];
 
   List<Employee> filteredEmployees = [];
@@ -45,7 +47,7 @@ class _EmployeesPageState extends State<EmployeesPage> {
 
   Future<void> getEmployees() async {
     try {
-      final fetchedEmployees = await _employeeService.fetchEmployees();
+      final fetchedEmployees = await _employeeController.fetchEmployees();
       setState(() {
         employees = fetchedEmployees;
         filteredEmployees = fetchedEmployees;

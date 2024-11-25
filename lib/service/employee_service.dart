@@ -9,9 +9,6 @@ class EmployeeService {
   Future<List<Employee>> fetchEmployees() async {
     try {
       final response = await http.get(Uri.parse(baseUrl));
-      print('base url: $baseUrl');
-      print('response: ${response.body}');
-
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
         final employees = data.map((e) => Employee.fromJson(e)).toList();
