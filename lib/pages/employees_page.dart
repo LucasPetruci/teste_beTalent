@@ -18,30 +18,14 @@ class EmployeesPage extends StatefulWidget {
 class _EmployeesPageState extends State<EmployeesPage> {
   final EmployeeController _employeeController =
       EmployeeController(EmployeeService());
-  List<Employee> employees = [];
-
-  List<Employee> filteredEmployees = [];
   final TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     getEmployees();
-    searchController.addListener(filterEmployees);
-  }
-
-  Future<void> filterEmployees() async {
-    final query = searchController.text.toLowerCase();
-    setState(() {
-      if (query.isEmpty) {
-        filteredEmployees = employees;
-      }
-      filteredEmployees = employees.where((employee) {
-        return employee.name.toLowerCase().contains(query) ||
-            employee.job.toLowerCase().contains(query) ||
-            employee.admissionDate.toLowerCase().contains(query) ||
-            employee.phone.toLowerCase().contains(query);
-      }).toList();
+    searchController.addListener(() {
+      _employeeController.filterEmployees(searchController.text);
     });
   }
 
@@ -49,10 +33,10 @@ class _EmployeesPageState extends State<EmployeesPage> {
     try {
       _employeeController.isLoadingNotifier.value = true;
       final fetchedEmployees = await _employeeController.fetchEmployees();
-      setState(() {
-        employees = fetchedEmployees;
-        filteredEmployees = fetchedEmployees;
-      });
+
+      // update filteredEmployees and employees to handle search
+      _employeeController.employeesNotifier.value = fetchedEmployees;
+      _employeeController.filteredEmployeesNotifier.value = fetchedEmployees;
     } catch (e) {
       print('Erro ao buscar funcionários: $e');
     } finally {
@@ -74,6 +58,7 @@ class _EmployeesPageState extends State<EmployeesPage> {
         backgroundColor: AppColors.white,
         elevation: 0,
         titleSpacing: 0,
+        // menu title in app bar
         title: Padding(
           padding: const EdgeInsets.all(16),
           child: BaseMenu(notificationCount: 2),
@@ -102,6 +87,7 @@ class _EmployeesPageState extends State<EmployeesPage> {
                   // Barra de pesquisa
                   TextField(
                     controller: searchController,
+                    // onChanged: (value) => filterEmployees(value),
                     decoration: InputDecoration(
                       hintText: 'Pesquisar',
                       prefixIcon: const Icon(Icons.search),
@@ -119,62 +105,69 @@ class _EmployeesPageState extends State<EmployeesPage> {
                       border: Border.all(color: AppColors.gray10, width: 1.0),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: filteredEmployees.isEmpty
-                        ? Padding(
+                    child: ValueListenableBuilder<List<Employee>>(
+                      valueListenable:
+                          _employeeController.filteredEmployeesNotifier,
+                      builder: (context, filteredEmployees, child) {
+                        if (filteredEmployees.isEmpty) {
+                          return Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: Text(
                               'Nenhum funcionário encontrado',
                               style: AppFont.h2(color: AppColors.gray10),
                             ),
-                          )
-                        : Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              // Cabeçalho da lista
-                              Container(
-                                height: 47,
-                                decoration: BoxDecoration(
-                                  color: AppColors.gray10,
-                                  borderRadius: const BorderRadius.only(
-                                    topLeft: Radius.circular(8),
-                                    topRight: Radius.circular(8),
-                                  ),
+                          );
+                        }
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            // Cabeçalho da lista
+                            Container(
+                              height: 47,
+                              decoration: BoxDecoration(
+                                color: AppColors.gray10,
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(8),
+                                  topRight: Radius.circular(8),
                                 ),
-                                child: Row(
-                                  children: [
-                                    const SizedBox(width: 24),
-                                    Text("Foto",
-                                        style:
-                                            AppFont.h2(color: AppColors.black)),
-                                    const SizedBox(width: 34),
-                                    Text("Nome",
-                                        style:
-                                            AppFont.h2(color: AppColors.black)),
-                                    const Spacer(),
-                                    Container(
-                                      width: 8,
-                                      height: 8,
-                                      decoration: const BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: AppColors.black,
-                                      ),
+                              ),
+                              child: Row(
+                                children: [
+                                  const SizedBox(width: 24),
+                                  Text("Foto",
+                                      style:
+                                          AppFont.h2(color: AppColors.black)),
+                                  const SizedBox(width: 34),
+                                  Text("Nome",
+                                      style:
+                                          AppFont.h2(color: AppColors.black)),
+                                  const Spacer(),
+                                  Container(
+                                    width: 8,
+                                    height: 8,
+                                    decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: AppColors.black,
                                     ),
-                                    const SizedBox(width: 36),
-                                  ],
-                                ),
+                                  ),
+                                  const SizedBox(width: 36),
+                                ],
                               ),
-                              // Lista de funcionários
-                              ListView.builder(
-                                itemCount: filteredEmployees.length,
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemBuilder: (context, index) {
-                                  return EmployeeCard(
-                                      employee: filteredEmployees[index]);
-                                },
-                              ),
-                            ],
-                          ),
+                            ),
+                            // Lista de funcionários
+                            ListView.builder(
+                              itemCount: filteredEmployees.length,
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                return EmployeeCard(
+                                    employee: filteredEmployees[index]);
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    ),
                   ),
                 ],
               ),
