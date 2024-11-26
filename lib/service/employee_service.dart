@@ -1,14 +1,12 @@
 import 'dart:convert';
-
 import '../model/employee.dart';
 import 'package:http/http.dart' as http;
+import '../constant.dart';
 
 class EmployeeService {
-  final String baseUrl = 'http://10.0.2.2:8080/employees';
-
   Future<List<Employee>> fetchEmployees() async {
     try {
-      final response = await http.get(Uri.parse(baseUrl));
+      final response = await http.get(Uri.parse(Constant.baseUrl));
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
         final employees = data.map((e) => Employee.fromJson(e)).toList();
