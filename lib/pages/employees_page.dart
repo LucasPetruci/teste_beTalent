@@ -87,10 +87,11 @@ class _EmployeesPageState extends State<EmployeesPage> {
                   // Barra de pesquisa
                   TextField(
                     controller: searchController,
-                    // onChanged: (value) => filterEmployees(value),
                     decoration: InputDecoration(
                       hintText: 'Pesquisar',
                       prefixIcon: const Icon(Icons.search),
+                      filled: true,
+                      fillColor: AppColors.gray5,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(32),
                         borderSide: BorderSide(
