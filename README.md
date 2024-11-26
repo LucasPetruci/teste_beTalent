@@ -7,7 +7,7 @@ Este projeto é um desafio técnico para a BeTalent baseado no [Figma](https://w
 Antes de começar, certifique-se de ter instalado:
 
 - [Flutter](https://docs.flutter.dev/get-started/install) 
-- Um emulador Android ou dispositivo físico conectado
+- Um emulador Android
 - [JSON Rest Server](https://pub.dev/packages/json_rest_server) para simular a API REST
 
 ---
@@ -26,14 +26,10 @@ Antes de começar, certifique-se de ter instalado:
 
 ### Passo 2: Atualizar o arquivo `EmployeeService`
 
-1. No arquivo `EmployeeService.dart`, localize a variável `baseUrl` e configure o IP e a porta onde o JSON Server está rodando:
+1. No arquivo `constant.dart`, localize a variável `baseUrl` e configure o IP e a porta onde o JSON Server está rodando:
 
-   #### Para emulador Android:
-   `final String baseUrl = 'http://10.0.2.2:<porta>/employees';`
-
-   #### Para dispositivo físico ou outros emuladores:
-   Substitua `10.0.2.2` pelo IP da sua máquina e mantenha a porta configurada no JSON Server. Por exemplo:
-   `final String baseUrl = 'http://<seu_ip_local>:<porta>/employees';`
+   #### No emulador:
+   `final String baseUrl = 'http://10.0.2.2:<porta>/employees';` 
 
 ---
 
