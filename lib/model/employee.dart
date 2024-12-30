@@ -1,5 +1,4 @@
 class Employee {
-  final int id;
   final String name;
   final String job;
   final String admissionDate;
@@ -7,7 +6,6 @@ class Employee {
   final String image;
 
   Employee({
-    required this.id,
     required this.name,
     required this.job,
     required this.admissionDate,
@@ -17,7 +15,6 @@ class Employee {
 
   factory Employee.fromJson(Map<String, dynamic> json) {
     return Employee(
-      id: json['id'],
       name: json['name'],
       job: json['job'],
       admissionDate: json['admission_date'],
@@ -54,6 +51,6 @@ class Employee {
 
   @override
   String toString() {
-    return 'Employee{id: $id, name: $name, job: $job, admissionDate: $formattedAdmissionDate, phone: $formattedPhone, image: $image}';
+    return 'Employee{ name: $name, job: $job, admissionDate: $formattedAdmissionDate, phone: $formattedPhone, image: $image}';
   }
 }
