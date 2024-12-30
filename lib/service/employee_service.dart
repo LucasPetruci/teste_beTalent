@@ -1,21 +1,22 @@
-import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../model/employee.dart';
-import 'package:http/http.dart' as http;
-import '../constant.dart';
 
 class EmployeeService {
+  final CollectionReference employeesCollection =
+      FirebaseFirestore.instance.collection('employees');
+
+  // Buscar todos os funcionários
   Future<List<Employee>> fetchEmployees() async {
     try {
-      final response = await http.get(Uri.parse(Constant.baseUrl));
-      if (response.statusCode == 200) {
-        final List<dynamic> data = json.decode(response.body);
-        final employees = data.map((e) => Employee.fromJson(e)).toList();
-        return employees;
-      } else {
-        throw Exception('Failed to load employees');
+      QuerySnapshot snapshot = await employeesCollection.get();
+      for (var doc in snapshot.docs) {
+        print(doc.data());
       }
+      return snapshot.docs
+          .map((doc) => Employee.fromJson(doc.data() as Map<String, dynamic>))
+          .toList();
     } catch (e) {
-      throw Exception('Error fetching employees: $e');
+      throw Exception('Erro ao buscar funcionários: $e');
     }
   }
 }
